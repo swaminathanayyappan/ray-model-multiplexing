@@ -18,8 +18,9 @@ jobs:
           ls -lah
           cp -r ./*.py "$FILE_NAME"
           tree "$FILE_NAME"
+          zip -r "$FILE_NAME".zip "$FILE_NAME"
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.FILE_NAME }}.zip
-          path: ./${{ env.FILE_NAME }}
+          path: ./${{ env.FILE_NAME }}.zip
