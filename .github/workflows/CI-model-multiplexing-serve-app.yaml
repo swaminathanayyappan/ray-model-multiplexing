@@ -12,18 +12,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Set file name
         run: echo "FILE_NAME=model-multiplex-app-v$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
-      - name: Create directory and copy files
-        run: |
-          mkdir -p "$FILE_NAME"
-          ls -lah
-          cp -r ./*.py "$FILE_NAME"
-          tree "$FILE_NAME"
-      - name: Compress files into zip file
-        run: |
-          zip -r "$FILE_NAME".zip "$FILE_NAME"
-          ls -lah
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.FILE_NAME }}
-          path: ./${{ env.FILE_NAME }}.zip
+          path: .
