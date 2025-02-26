@@ -10,14 +10,17 @@ jobs:
     steps:
       - name: Checkout latest code
         uses: actions/checkout@v4
-      - name: Set ZIP file name
+      - name: Set file name
         run: echo "FILE_NAME=model-multiplex-app-v$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
-      # - name: Compress into zip file
-      #   run: zip -r "${{ env.ZIP_FILE_NAME }}.zip" .
-      - name: Copy files
+      - name: Create directory and copy files
         run: |
-          mkdir -p ${{ env.FILE_NAME }}
-          cp model_multiplexing_app.py ${{ env.FILE_NAME }}
+          mkdir -p "$FILE_NAME"
+          if [ -f model_multiplexing_app.py ]; then
+            cp model_multiplexing_app.py "$FILE_NAME"
+          else
+            echo "Error: model_multiplexing_app.py not found!" >&2
+            exit 1
+          fi
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
