@@ -16,20 +16,14 @@ jobs:
         run: |
           mkdir -p "$FILE_NAME"
           ls -lah
-          cp -r ./*.py $GITHUB_WORKSPACE/$FILE_NAME
-          tree $GITHUB_WORKSPACE/$FILE_NAME
-      - name: compress files
+          cp -r ./*.py "$FILE_NAME"
+          tree "$FILE_NAME"
+      - name: Compress files into zip file
         run: |
-          zip -r $GITHUB_WORKSPACE/$FILE_NAME.zip $GITHUB_WORKSPACE/$FILE_NAME
-          ls -lah $GITHUB_WORKSPACE
-  upload-app-artifact:
-    runs-on: ubuntu-latest
-    needs: create-artifact
-    steps:
-      - name: List files on workspace
-        run: ls -lah $GITHUB_WORKSPACE
+          zip -r "$FILE_NAME".zip "$FILE_NAME"
+          ls -lah
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.FILE_NAME }}.zip
-          path: $GITHUB_WORKSPACE/$FILE_NAME
+          name: ${{ env.FILE_NAME }}
+          path: ./${{ env.FILE_NAME }}.zip
