@@ -23,3 +23,5 @@ jobs:
         with:
           name: ${{ env.FILE_NAME }}.zip
           path: ./${{ env.FILE_NAME }}
+      - name: Print artifact URL
+        run: echo "Artifact URL:${{ steps.upload-artifact.outputs.artifact_url }}"
