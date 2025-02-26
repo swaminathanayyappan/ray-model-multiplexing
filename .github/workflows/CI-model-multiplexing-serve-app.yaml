@@ -17,7 +17,7 @@ jobs:
       - name: Copy files
         run: |
           mkdir -p ${{ env.FILE_NAME }}
-          cp ./model_multiplexing_app.py ${{ env.FILE_NAME }}
+          cp model_multiplexing_app.py ${{ env.FILE_NAME }}
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
