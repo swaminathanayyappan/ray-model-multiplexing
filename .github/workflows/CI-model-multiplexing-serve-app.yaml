@@ -15,14 +15,9 @@ jobs:
       - name: Create directory and copy files
         run: |
           mkdir -p "$FILE_NAME"
-          if [ -f model_multiplexing_app.py ]; then
-            cp model_multiplexing_app.py "$FILE_NAME"
-          else
-            echo "Error: model_multiplexing_app.py not found!" >&2
-            exit 1
-          fi
+          cp -r ./*.py "$FILE_NAME"
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.FILE_NAME }}
+          name: ${{ env.FILE_NAME }}.zip
           path: ./${{ env.FILE_NAME }}
