@@ -1,17 +1,22 @@
 name: CI-Model-multiplexing-serve-app
+
 on:
   push:
     branches:
       - ENH/1/serve-model-multiplexing-code
       - main
+
 jobs:
+
   create-and-upload-artifact:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout latest code
         uses: actions/checkout@v4
+
       - name: Set file name
         run: echo "FILE_NAME=model-multiplex-app-v$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -46,10 +51,21 @@ jobs:
         with:
           tag_name: ${{ env.TAG_NAME }}
           release_name: " Release ${{ env.TAG_NAME }}"
-          body: "Automated release of model multiplexing app"
+          body: "Automated release by GitHub Actions for the tag ${{ env.TAG_NAME }}"
           draft: false
           prerelease: false
-      - name: Get release URL
+
+      # - name: Get release URL
+      #   run: |
+      #     echo "${{ steps.create_release.outputs.upload_url }}"
+      #     echo "${{ steps.create_release.outputs.html_url }}"
+
+      - name: Fetch Release Asset URL
+        id: get_asset_url
         run: |
-          echo "${{ steps.create_release.outputs.upload_url }}"
-          echo "${{ steps.create_release.outputs.html_url }}"
+          ASSET_URL=$(gh api repos/${{ github.repository }}/releases/latest/assets --jq '.[].browser_download_url')
+          echo "ASSET_URL=$ASSET_URL" >> $GITHUB_ENV
+      
+      - name: Use Asset URL
+        run: |
+          echo "Download the asset here: ${{ env.ASSET_URL }}"
