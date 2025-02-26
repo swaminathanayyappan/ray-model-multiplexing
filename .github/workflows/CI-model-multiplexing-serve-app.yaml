@@ -11,11 +11,15 @@ jobs:
       - name: Checkout latest code
         uses: actions/checkout@v4
       - name: Set ZIP file name
-        run: echo "ZIP_FILE_NAME=model-multiplex-app-v$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
-      - name: Compress into zip file
-        run: zip -r "${{ env.ZIP_FILE_NAME }}.zip" .
+        run: echo "FILE_NAME=model-multiplex-app-v$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+      # - name: Compress into zip file
+      #   run: zip -r "${{ env.ZIP_FILE_NAME }}.zip" .
+      - name: Copy files
+        run: |
+          mkdir -p ${{ env.FILE_NAME }}
+          cp ./model_multiplexing_app.py ${{ env.FILE_NAME }}
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.ZIP_FILE_NAME }}
-          path: ./${{ env.ZIP_FILE_NAME }}.zip
+          name: ${{ env.FILE_NAME }}
+          path: ./${{ env.FILE_NAME }}
