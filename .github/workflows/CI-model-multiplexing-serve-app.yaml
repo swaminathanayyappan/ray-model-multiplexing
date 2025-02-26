@@ -16,8 +16,8 @@ jobs:
         run: |
           mkdir -p "$FILE_NAME"
           ls -lah
-          cp -r ./*.py "$FILE_NAME"
-          tree "$FILE_NAME"
+          cp -r ./*.py ${{ Pipeline.workspace }}/$FILE_NAME
+          tree ${{ Pipeline.workspace }}/$FILE_NAME
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -31,4 +31,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.FILE_NAME }}.zip
-          path: ./${{ env.FILE_NAME }}
+          path: ${{ Pipeline.workspace }}/$FILE_NAME
