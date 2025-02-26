@@ -5,7 +5,7 @@ on:
       - ENH/1/serve-model-multiplexing-code
       - main
 jobs:
-  create-artifact:
+  create-and-upload-artifact:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout latest code
@@ -17,3 +17,14 @@ jobs:
         with:
           name: ${{ env.FILE_NAME }}
           path: .
+  release-from-artifact:
+    runs-on: ubuntu-latest
+    needs: create-and-upload-artifact
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.create-and-upload-artifact.outputs.artifact_name }}
+      - name: list files
+        run: |
+          ls -lah
