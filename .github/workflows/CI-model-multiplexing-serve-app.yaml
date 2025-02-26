@@ -15,7 +15,9 @@ jobs:
       - name: Create directory and copy files
         run: |
           mkdir -p "$FILE_NAME"
+          ls -lah
           cp -r ./*.py "$FILE_NAME"
+          tree "$FILE_NAME"
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
