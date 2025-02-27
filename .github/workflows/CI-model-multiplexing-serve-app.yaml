@@ -37,6 +37,8 @@ jobs:
       - name: Create folder structure for artifacts
         run: |
           mkdir $RELEASE_TAG
+          mkdir $RELEASE_TAG/manifests
+          mkdir $RELEASE_TAG/app
           cp -r manifests/$RELEASE_TAG-app-build-config.yaml $RELEASE_TAG/manifests/app-build-config.yaml
           cp -r *.py $RELEASE_TAG/app/
           cp -r README.md $RELEASE_TAG/README.md
