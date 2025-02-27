@@ -1,0 +1,52 @@
+apiVersion: ray.io/v1
+kind: RayService
+metadata:
+  name: model-multiplexing-serve-app
+spec:
+  serveConfigV2: |
+    applications:
+      - name: ModelMultiplexerApp
+        route_prefix: /mma
+        import_path: model_multiplex_app.app
+        runtime_env:
+          pip:
+            - transformers==4.45.2
+            - torch==2.4.1
+          working_dir: "https://github.com/swaminathanayyappan/ray-model-multiplexing/archive/refs/tags/v20250226112221.zip"
+        deployments:
+          - name: MultiplexerApp
+            num_replicas: 2
+  rayClusterConfig:
+    rayVersion: '2.9.0'
+    headGroupSpec:
+      rayStartParams:
+        dashboard-host: '0.0.0.0'
+      template:
+        spec:
+          containers:
+            - name: ray-head
+              image: rayproject/ray:2.9.0
+              ports:
+                - containerPort: 6379
+                  name: gcs-server
+                - containerPort: 8265 
+                  name: dashboard
+                - containerPort: 10001
+                  name: client
+                - containerPort: 8000
+                  name: serve
+    workerGroupSpecs:
+      - replicas: 1
+        minReplicas: 1
+        maxReplicas: 5
+        groupName: small-group
+        rayStartParams: {}
+        template:
+          spec:
+            containers:
+              - name: ray-worker 
+                image: rayproject/ray:2.9.0
+                lifecycle:
+                  preStop:
+                    exec:
+                      command: ["/bin/sh","-c","ray stop"]
