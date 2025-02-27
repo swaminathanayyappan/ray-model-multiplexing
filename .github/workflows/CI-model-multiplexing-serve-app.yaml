@@ -10,6 +10,8 @@ jobs:
 
   create-and-upload-artifact:
     runs-on: ubuntu-latest
+    outputs:
+      artifact_name: ${{ steps.upload_artifact.outputs.artifact_name }}
     steps:
       - name: Checkout latest code
         uses: actions/checkout@v4
