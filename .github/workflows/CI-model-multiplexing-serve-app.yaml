@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set Release Tag
-        run: echo "RELEASE_TAG=v$(date +'%d%m%Y.%H.%M.%S')" >> $GITHUB_ENV
+        run: echo "RELEASE_TAG=${GITHUB_SHA::7}" >> $GITHUB_ENV
       
       - name: Copy files
         run: |
@@ -28,7 +28,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.RELEASE_TAG }}
-          path: ./$RELEASE_TAG/*
+          path: ${{ env.RELEASE_TAG }}
+          retention-days: 15
 
   # download-artifact-and-publish-release:
   #   runs-on: ubuntu-latest
