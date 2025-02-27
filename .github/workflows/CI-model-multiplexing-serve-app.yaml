@@ -20,6 +20,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.9'
+          cache: 'pip'
       
       - name: Install Dependencies
         run: |
@@ -57,7 +58,6 @@ jobs:
     needs: Build-Serve-App-Config
     outputs:
       release_id: ${{ steps.create_release.outputs.id }}
-      asset_url: ${{ steps.get_asset_url.outputs.asset_url }}
     env:
       RELEASE_TAG: ${{ needs.Build-Serve-App-Config.outputs.artifact_name}}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -79,13 +79,10 @@ jobs:
           release_name: "${{ env.RELEASE_TAG }}"
           body_path: "./README.md"
       
-      - name: Get asset URL
+      - name: Get ZIP file asset URL
         id: get_asset_url
         run: |
-          ASSET_URL=$(gh api repos/${{ github.repository }}/releases/${{ steps.create_release.outputs.id }}/assets --jq '.[].browser_download_url')
-          echo "asset_url=$ASSET_URL" >> $GITHUB_ENV
-          echo "asset_url=$ASSET_URL" >> $GITHUB_OUTPUT
-
-      - name: Display Asset URL
-        run: |
-          echo "Asset URL: ${{ steps.get_asset_url.outputs.asset_url }}"
+          ZIP_URL="https://github.com/${{ github.repository }}/archive/refs/tags/${{ env.RELEASE_TAG }}.zip"
+          echo "ZIP File URL: $ZIP_URL"
+          echo "ZIP File URL: $ZIP_URL" >> $GITHUB_ENV
+          echo "ZIP File URL: $ZIP_URL" >> $GITHUB_OUTPUT
