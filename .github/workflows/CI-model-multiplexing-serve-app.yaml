@@ -57,6 +57,7 @@ jobs:
     needs: Build-Serve-App-Config
     env:
       RELEASE_TAG: ${{ needs.Build-Serve-App-Config.outputs.artifact_name}}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Download Artifact
         uses: actions/download-artifact@v4
@@ -69,8 +70,6 @@ jobs:
       
       - name: Release artifact
         uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ env.RELEASE_TAG }}
           release_name: "${{ env.RELEASE_TAG }}"
@@ -83,4 +82,5 @@ jobs:
         run: |
           ASSET_URL=$(gh api repos/${{ github.repository }}/releases/$release_id/assets --jq '.[0].browser_download_url')
           echo "asset_url=$ASSET_URL" >> $GITHUB_ENV
+          echo "asset_url=$ASSET_URL" >> $GITHUB_OUTPUT
           echo $ASSET_URL
