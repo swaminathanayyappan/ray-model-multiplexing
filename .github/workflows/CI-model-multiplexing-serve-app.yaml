@@ -21,7 +21,7 @@ jobs:
       
       - name: Install Dependencies
         run: |
-          pip install ray==2.34.0 ray[serve]
+          pip install -r requirements.txt
 
       - name: Create Release Tag
         id: release_tag
