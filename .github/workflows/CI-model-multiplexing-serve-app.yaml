@@ -29,7 +29,7 @@ jobs:
         id: release_tag
         run: |
           echo "RELEASE_TAG=v$(date +'%d.%m.%Y-%H%M%S')_${GITHUB_SHA::7}" >> $GITHUB_ENV
-          echo $RELEASE_TAG
+          echo "RELEASE_TAG=v$(date +'%d.%m.%Y-%H%M%S')_${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
       
       - name: Build serve app config file
         run: |
@@ -38,8 +38,8 @@ jobs:
       
       - name: Create folder structure for artifacts
         run: |
-          mkdir $RELEASE_TAG
-          mkdir $RELEASE_TAG/manifests
+          mkdir -p $RELEASE_TAG
+          mkdir -p $RELEASE_TAG/manifests
           cp -r manifests/$RELEASE_TAG-app-build-config.yaml $RELEASE_TAG/manifests/app-build-config.yaml
           cp -r *.py $RELEASE_TAG/
           cp -r README.md $RELEASE_TAG/README.md
