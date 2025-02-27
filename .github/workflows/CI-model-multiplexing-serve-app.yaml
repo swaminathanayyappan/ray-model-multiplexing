@@ -77,3 +77,8 @@ jobs:
           body_path: "./README.md"
           draft: false
           prerelease: false
+          files: |
+            ./*.py
+            ./README.md
+            ./manifests/app-build-config.yaml
+
