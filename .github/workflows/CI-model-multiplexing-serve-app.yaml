@@ -57,6 +57,7 @@ jobs:
     needs: Build-Serve-App-Config
     outputs:
       release_id: ${{ steps.create_release.outputs.id }}
+      asset_url: ${{ steps.get_asset_url.outputs.asset_url }}
     env:
       RELEASE_TAG: ${{ needs.Build-Serve-App-Config.outputs.artifact_name}}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -84,4 +85,7 @@ jobs:
           ASSET_URL=$(gh api repos/${{ github.repository }}/releases/${{ steps.create_release.outputs.id }}/assets --jq '.[].browser_download_url')
           echo "asset_url=$ASSET_URL" >> $GITHUB_ENV
           echo "asset_url=$ASSET_URL" >> $GITHUB_OUTPUT
-          echo $ASSET_URL
+
+      - name: Display Asset URL
+        run: |
+          echo "Asset URL: ${{ env.asset_url }}"
