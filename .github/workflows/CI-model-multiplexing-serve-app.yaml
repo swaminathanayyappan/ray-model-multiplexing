@@ -32,3 +32,20 @@ jobs:
       - name: Build serve app config file
         run: |
           serve build model_multiplex_app.app -o manifests/$RELEASE_TAG-app-build-config.yaml
+          tree manifests
+      
+      - name: Create folder structure for artifacts
+        run: |
+          mkdir $RELEASE_TAG
+          cp -r manifests/$RELEASE_TAG-app-build-config.yaml $RELEASE_TAG/manifests/app-build-config.yaml
+          cp -r *.py $RELEASE_TAG/app/
+          cp -r README.md $RELEASE_TAG/README.md
+          zip -r $RELEASE_TAG.zip $RELEASE_TAG
+          tree $RELEASE_TAG
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{env.RELEASE_TAG}}
+          path: ./$RELEASE_TAG.zip
+          retention-days: 15
