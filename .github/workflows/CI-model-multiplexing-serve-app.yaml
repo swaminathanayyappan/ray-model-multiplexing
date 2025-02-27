@@ -50,5 +50,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.RELEASE_TAG }}
-          path: ./${{ env.RELEASE_TAG }}.zip
+          path: ./${{ env.RELEASE_TAG }}
           retention-days: 15
