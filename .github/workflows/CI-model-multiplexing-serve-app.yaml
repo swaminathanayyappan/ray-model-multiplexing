@@ -83,6 +83,6 @@ jobs:
         id: get_asset_url
         run: |
           ZIP_URL="https://github.com/${{ github.repository }}/archive/refs/tags/${{ env.RELEASE_TAG }}.zip"
-          echo "ZIP File URL: $ZIP_URL"
-          echo "ZIP File URL: $ZIP_URL" >> $GITHUB_ENV
-          echo "ZIP File URL: $ZIP_URL" >> $GITHUB_OUTPUT
+          echo $ZIP_URL
+          echo $ZIP_URL >> $GITHUB_ENV
+          echo $ZIP_URL >> $GITHUB_OUTPUT
