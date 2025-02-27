@@ -88,4 +88,4 @@ jobs:
 
       - name: Display Asset URL
         run: |
-          echo "Asset URL: ${{ env.asset_url }}"
+          echo "Asset URL: ${{ steps.get_asset_url.outputs.asset_url }}"
