@@ -15,12 +15,14 @@ jobs:
         uses: actions/checkout@v4
       
       - name: Install Python and Dependencies
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: '3.9.0'
-          pip-version: '24.2'
-          dependencies: 'ray==2.34.0 ray[serve]'
       
+      - name: Install Dependencies
+        run: |
+          pip install ray==2.34.0 ray[serve]
+
       - name: Create Release Tag
         id: release_tag
         run: |
