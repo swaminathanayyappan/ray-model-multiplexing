@@ -11,12 +11,13 @@ jobs:
   create-and-upload-artifact:
     runs-on: ubuntu-latest
     outputs:
-      artifact_name: ${{ steps.upload_artifact.outputs.artifact_name }}
+      artifact_name: ${{ steps.set_tag.outputs.RELEASE_TAG }}
     steps:
       - name: Checkout latest code
         uses: actions/checkout@v4
 
       - name: Set Release Tag
+        id: set_tag
         run: echo "RELEASE_TAG=v$(date +'%d.%m.%Y-%H%M%S')_${GITHUB_SHA::7}" >> $GITHUB_ENV
       
       - name: Copy files
