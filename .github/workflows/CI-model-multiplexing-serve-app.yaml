@@ -31,4 +31,4 @@ jobs:
       
       - name: Build serve app config file
         run: |
-          serve build --help
+          serve build model_multiplex_app.app -o manifests/$RELEASE_TAG-app-build-config.yaml
