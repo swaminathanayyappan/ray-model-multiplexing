@@ -10,6 +10,8 @@ jobs:
 
   Build-Serve-App-Config:
     runs-on: ubuntu-latest
+    outputs:
+      artifact_name: ${{ steps.release_tag.outputs.RELEASE_TAG}}
     steps:
       - name: Checkout Latest code
         uses: actions/checkout@v4
@@ -38,9 +40,8 @@ jobs:
         run: |
           mkdir $RELEASE_TAG
           mkdir $RELEASE_TAG/manifests
-          mkdir $RELEASE_TAG/app
           cp -r manifests/$RELEASE_TAG-app-build-config.yaml $RELEASE_TAG/manifests/app-build-config.yaml
-          cp -r *.py $RELEASE_TAG/app/
+          cp -r *.py $RELEASE_TAG/
           cp -r README.md $RELEASE_TAG/README.md
           zip -r $RELEASE_TAG.zip $RELEASE_TAG
           tree $RELEASE_TAG
