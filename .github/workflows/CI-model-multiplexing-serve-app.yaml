@@ -22,12 +22,13 @@ jobs:
           mkdir -p $RELEASE_TAG
           cp -r ./*.py $RELEASE_TAG/
           cp -r README.md $RELEASE_TAG/
+          tree $RELEASE_TAG
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.RELEASE_TAG }}
-          path: ./$RELEASE_TAG
+          path: ./$RELEASE_TAG/*
 
   # download-artifact-and-publish-release:
   #   runs-on: ubuntu-latest
