@@ -9,6 +9,7 @@ on:
 env:
   RELEASE_TAG: v${{ github.run_number }}_${{github.sha}}
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  TIMESTAMP: ${{ github.event.head_commit.timestamp}}
 
 jobs:
   Build-Serve-App-Config:
@@ -23,15 +24,9 @@ jobs:
           python-version: '3.9'
           cache: 'pip'
 
-      - name: Install Python Dependencies
-        run: |
-          pip install -r requirements.txt
-
-      # - name: Create Release Tag
-      #   id: release_tag
+      # - name: Install Python Dependencies
       #   run: |
-      #     echo "RELEASE_TAG=v$(date +'%d.%m.%Y-%H%M%S')_${GITHUB_SHA::7}" >> $GITHUB_ENV
-      #     echo "RELEASE_TAG=v$(date +'%d.%m.%Y-%H%M%S')_${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+      #     pip install -r requirements.txt
       
       - name: Build Serve App Config File
         run: |
