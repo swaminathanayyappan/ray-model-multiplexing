@@ -1,4 +1,4 @@
-name: CI-Model-multiplexing-serve-app
+name: CI-CD-Pipeline-Model-Multiplexing-Serve-App
 
 on:
   push:
@@ -7,44 +7,45 @@ on:
       - main
 
 jobs:
-
   Build-Serve-App-Config:
+    env:
+      RELEASE_TAG: v$(date +'%d.%m.%Y-%H%M%S')_${GITHUB_SHA::7}
     runs-on: ubuntu-latest
     outputs:
-      artifact_name: ${{ steps.release_tag.outputs.RELEASE_TAG}}
+      artifact_name: ${{ env.RELEASE_TAG}}
     steps:
       - name: Checkout Latest code
         uses: actions/checkout@v4
       
-      - name: Install Python and Dependencies
+      - name: Install Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.9'
           cache: 'pip'
       
-      - name: Install Dependencies
+      - name: Install Python Dependencies
         run: |
           pip install -r requirements.txt
 
-      - name: Create Release Tag
-        id: release_tag
-        run: |
-          echo "RELEASE_TAG=v$(date +'%d.%m.%Y-%H%M%S')_${GITHUB_SHA::7}" >> $GITHUB_ENV
-          echo "RELEASE_TAG=v$(date +'%d.%m.%Y-%H%M%S')_${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+      # - name: Create Release Tag
+      #   id: release_tag
+      #   run: |
+      #     echo "RELEASE_TAG=v$(date +'%d.%m.%Y-%H%M%S')_${GITHUB_SHA::7}" >> $GITHUB_ENV
+      #     echo "RELEASE_TAG=v$(date +'%d.%m.%Y-%H%M%S')_${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
       
-      - name: Build serve app config file
+      - name: Build Serve App Config File
         run: |
-          serve build model_multiplex_app.app -o manifests/$RELEASE_TAG-app-build-config.yaml
+          serve build model_multiplex_app.app -o manifests/${{ env.RELEASE_TAG}}-app-build-config.yaml
           tree manifests
       
       - name: Create folder structure for artifacts
         run: |
-          mkdir -p $RELEASE_TAG
-          mkdir -p $RELEASE_TAG/manifests
-          cp -r manifests/$RELEASE_TAG-app-build-config.yaml $RELEASE_TAG/manifests/app-build-config.yaml
-          cp -r *.py $RELEASE_TAG/
-          cp -r README.md $RELEASE_TAG/README.md
-          tree $RELEASE_TAG
+          mkdir -p ${{ env.RELEASE_TAG}}
+          mkdir -p ${{ env.RELEASE_TAG}}/manifests
+          cp -r manifests/${{ env.RELEASE_TAG}}-app-build-config.yaml ${{ env.RELEASE_TAG}}/manifests/app-build-config.yaml
+          cp -r *app.py ${{ env.RELEASE_TAG}}/
+          cp -r README.md ${{ env.RELEASE_TAG}}/README.md
+          tree ${{ env.RELEASE_TAG}}
       
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -58,6 +59,7 @@ jobs:
     needs: Build-Serve-App-Config
     outputs:
       release_id: ${{ steps.create_release.outputs.id }}
+      zip_url: ${{ steps.get_asset_url.outputs.ZIP_URL }}
     env:
       RELEASE_TAG: ${{ needs.Build-Serve-App-Config.outputs.artifact_name}}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
