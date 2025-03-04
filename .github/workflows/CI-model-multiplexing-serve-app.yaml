@@ -19,11 +19,6 @@ jobs:
       - name: Checkout Latest code
         uses: actions/checkout@v4
       
-      - name: Check RELEASE_TAG and ASSET_URL
-        run: |
-          echo ${{env.RELEASE_TAG }}
-          echo ${{env.ASSET_URL}}
-      
       - name: Install Python
         uses: actions/setup-python@v5
         with:
@@ -42,7 +37,6 @@ jobs:
       - name: Prepare Deploy Config
         run: |
           python format_yaml.py -b manifests/app-build-config.yaml -d manifests/app-deploy-config.yaml -o manifests/app-deploy-config.yaml -w ${{env.ASSET_URL}}
-          tree manifests
       
       # Moves certain files into artifacts folder
       - name: Create folder structure for artifacts
@@ -50,9 +44,8 @@ jobs:
           mkdir -p ${{ env.RELEASE_TAG}}
           mkdir -p ${{ env.RELEASE_TAG}}/manifests
           mkdir -p ${{ env.RELEASE_TAG}}/app
-          cp -r manifests/app-build-config.yaml ${{ env.RELEASE_TAG}}/manifests/app-build-config.yaml
-          cp -r manifests/app-deploy-config.yaml ${{ env.RELEASE_TAG}}/manifests/app-deploy-config.yaml
-          cp -r *app.py ${{ env.RELEASE_TAG}}/app/
+          cp -r manifests/*.yaml ${{ env.RELEASE_TAG}}/manifests/
+          cp -r ./app/*app.py ${{ env.RELEASE_TAG}}/app/
           cp -r *.md ${{ env.RELEASE_TAG}}/
           tree ${{ env.RELEASE_TAG}}
       
@@ -78,14 +71,21 @@ jobs:
         run: |
           tree .
       
+      # - name: Publish artifact as Github release
+      #   id: create_release
+      #   uses: actions/create-release@v1
+      #   with:
+      #     tag_name: ${{ env.RELEASE_TAG }}
+      #     release_name: "${{ env.RELEASE_TAG }}"
+      #     body_path: "./README.md"
+
       - name: Publish artifact as Github release
         id: create_release
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.RELEASE_TAG }}
-          release_name: "${{ env.RELEASE_TAG }}"
           body_path: "./README.md"
-      
+
       - name: Get ZIP file asset URL
         id: get_asset_url
         run: |

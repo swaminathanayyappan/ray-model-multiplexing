@@ -37,6 +37,7 @@ def prepare_deployment_config(
     if build_spec:
         for app in build_spec:
             # Setting working_dir for the whole app
+            app["import_path"] = f"app.{app.get('import_path')}"
             app_runtime_env = app.get("runtime_env", {})
             app_runtime_env["working_dir"] = f'"{working_dir}"'
             # Get the existing dependencies of a application

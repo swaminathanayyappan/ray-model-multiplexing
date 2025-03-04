@@ -2,7 +2,7 @@
 
 
 FILE_PATH="manifests/app-build-config.yaml"
-COMMAND="serve build model_multiplex_app.app test_app.app -o manifests/app-build-config.yaml"
+COMMAND="serve build -d app/ model_multiplex_app.app test_app.app -o manifests/app-build-config.yaml"
 
 # Check if the file exists
 if [ ! -f "$FILE_PATH" ]; then
