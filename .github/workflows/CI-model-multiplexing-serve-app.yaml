@@ -9,10 +9,11 @@ on:
 env:
   RELEASE_TAG: v${{ github.run_number }}_${{github.sha}}
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  TIMESTAMP: ${{ github.event.head_commit.timestamp}}
+  # TIMESTAMP: ${{ github.event.head_commit.timestamp}}
+  ASSET_URL: https://github.com/${{ github.repository }}/archive/refs/tags/v${{ github.run_number }}_${{ github.sha }}.zip
 
 jobs:
-  Build-Serve-App-Config:
+  Build-Serve-App:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Latest code
@@ -28,18 +29,23 @@ jobs:
         run: |
           pip install -r requirements.txt
       
-      - name: Build Serve App Config File
+      - name: Prepare Serve Build Config
         run: |
-          serve build model_multiplex_app.app -o manifests/${{env.RELEASE_TAG}}-app-build-config.yaml
-          tree manifests
+          sh ./scripts/check_build_files.sh
       
+      # Run the python code to format the build and deploy yaml files
+      - name: Prepare Deploy Config
+        run: |
+          python format_yaml.py -b manifests/app-build-config.yaml -d manifests/app-deploy-config.yaml -o manifests/app-deploy-config.yaml -w ${{env.ASSET_URL}}
+          tree manifests
+
       - name: Create folder structure for artifacts
         run: |
           mkdir -p ${{ env.RELEASE_TAG}}
-          mkdir -p ${{ env.RELEASE_TAG}}/manifests
-          cp -r manifests/${{ env.RELEASE_TAG}}-app-build-config.yaml ${{ env.RELEASE_TAG}}/manifests/app-build-config.yaml
-          cp -r *app.py ${{ env.RELEASE_TAG}}/
-          cp -r README.md ${{ env.RELEASE_TAG}}/README.md
+          cp -r manifests/app-build-config.yaml ${{ env.RELEASE_TAG}}/manifests/app-build-config.yaml
+          cp -r manifests/app-deploy-config.yaml ${{ env.RELEASE_TAG}}/manifests/app-deploy-config.yaml
+          cp -r app/ ${{ env.RELEASE_TAG}}/app/
+          cp -r *.md ${{ env.RELEASE_TAG}}/
           tree ${{ env.RELEASE_TAG}}
       
       - name: Upload artifact
@@ -51,7 +57,7 @@ jobs:
 
   Download-artifact-and-push-release:
     runs-on: ubuntu-latest
-    needs: Build-Serve-App-Config
+    needs: Build-Serve-App
     outputs:
       zip_url: ${{ steps.get_asset_url.outputs.ZIP_URL }}
     steps:
@@ -75,7 +81,4 @@ jobs:
       - name: Get ZIP file asset URL
         id: get_asset_url
         run: |
-          ZIP_URL="https://github.com/${{ github.repository }}/archive/refs/tags/${{ env.RELEASE_TAG }}.zip"
-          echo $ZIP_URL
-          echo "ZIP_URL=$ZIP_URL" >> $GITHUB_ENV
-          echo "ZIP_URL=$ZIP_URL" >> $GITHUB_OUTPUT
+          echo ${{env.ASSET_URL}}

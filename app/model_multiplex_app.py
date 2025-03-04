@@ -4,7 +4,12 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse
 
 
-@serve.deployment(num_replicas=2)
+@serve.deployment(route_prefix="/mma",
+                  num_replicas=2,
+                  ray_actor_options={"runtime_env":
+                                     {"pip":
+                                      ["transformers==4.45.2", "torch==2.4.1"]
+                                      }})
 class MultiplexerApp:
     def __init__(self):
         self.model_type = "translation_en_to_fr"
