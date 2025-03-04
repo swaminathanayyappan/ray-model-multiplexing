@@ -43,7 +43,8 @@ jobs:
         run: |
           python format_yaml.py -b manifests/app-build-config.yaml -d manifests/app-deploy-config.yaml -o manifests/app-deploy-config.yaml -w ${{env.ASSET_URL}}
           tree manifests
-
+      
+      # Moves certain files into artifacts folder
       - name: Create folder structure for artifacts
         run: |
           mkdir -p ${{ env.RELEASE_TAG}}
