@@ -51,7 +51,7 @@ jobs:
           mkdir -p ${{ env.RELEASE_TAG}}/manifests
           cp -r manifests/app-build-config.yaml ${{ env.RELEASE_TAG}}/manifests/app-build-config.yaml
           cp -r manifests/app-deploy-config.yaml ${{ env.RELEASE_TAG}}/manifests/app-deploy-config.yaml
-          cp -r app/*app.py ${{ env.RELEASE_TAG}}/
+          cp -r *app.py ${{ env.RELEASE_TAG}}/app/
           cp -r *.md ${{ env.RELEASE_TAG}}/
           tree ${{ env.RELEASE_TAG}}
       
