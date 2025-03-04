@@ -42,6 +42,8 @@ jobs:
       - name: Create folder structure for artifacts
         run: |
           mkdir -p ${{ env.RELEASE_TAG}}
+          mkdir -p ${{ env.RELEASE_TAG}}/manifests
+          mkdir -p ${{ env.RELEASE_TAG}}/app
           cp -r manifests/app-build-config.yaml ${{ env.RELEASE_TAG}}/manifests/app-build-config.yaml
           cp -r manifests/app-deploy-config.yaml ${{ env.RELEASE_TAG}}/manifests/app-deploy-config.yaml
           cp -r app/ ${{ env.RELEASE_TAG}}/app/
