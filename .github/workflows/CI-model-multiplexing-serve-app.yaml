@@ -19,6 +19,11 @@ jobs:
       - name: Checkout Latest code
         uses: actions/checkout@v4
       
+      - name: Check RELEASE_TAG and ASSET_URL
+        run: |
+          echo ${{env.RELEASE_TAG }}
+          echo ${{env.ASSET_URL}}
+      
       - name: Install Python
         uses: actions/setup-python@v5
         with:
