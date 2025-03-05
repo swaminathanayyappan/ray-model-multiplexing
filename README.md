@@ -3,7 +3,7 @@
 This repository illustrates about the end-to-end deployment of Ray Serve application that uses the model multiplexing API to serve model with different weights and has same input size. Serving the same varities of models with differentiated weights can be tedious and resource intensive. Ray uses LRU (Least Recently Used) approach that unloads the least recently model. It provides the feature of holding certain number of models within a single replica which reduces the loading time as it be cached in each replicas.
 
 
-## Runtime configration
+## Runtime Configration
 
 Python 3.9.0
 
@@ -11,7 +11,7 @@ Pip 24.2
 
 Ray 2.34.0
 
-## Folder structure
+## Folder Structure
 
 .                                   # Project Root Directory
 ├── README.md                       # Readme.md file
@@ -27,7 +27,7 @@ Ray 2.34.0
 └── scripts                 
     └── check_build_files.sh        # shell script used in generating serve build configuration file
 
-# Local setup
+## Local Setup
 
 * Create a python virtual or conda environment with the above specified python, pip and Ray version.
 * Ensure ray is started and running on your local system using the command `ray start --head`. Once started you can see the ray dasboard that is running on the port 8265.
@@ -35,9 +35,30 @@ Ray 2.34.0
 * Now run the serve application using the command `serve run -d app/ model_multiplex_app.app`
 * The serve application will be running in port **8000** by default and by providing necessary flags it can run seamlessly and monitored within the Ray Dashboard.
 
-# Build and Deploy
+## Build And Deploy
 
 * Once the serve application successfully runs in the localhost , the build configuration has to be generated such that it can be used to deploy and serve the application.
 * use the serve build command `serve build -d app/ model_multiplex.app -o manifests/app-build-config.yaml`
 * Upon running this command it genertes the build configuration yaml file inside the manifests directory.
 * This yaml will be used for deploying the Ray serve application.
+
+## CI-CD Pipeline Workflow
+
+A pipeline is created and maintained within the  repository to deploy the serve application into the raykube AKS cluster. The pipeline process includes
+    - Continuous Integration
+        - Installing python and dependencies
+        - Building the serve configuration yaml manifest file
+        - Formatting the serve build yaml file to generate the deployment yaml config file
+        - Creating artifacts to publish them as a GitHub release
+    - Continuous Deployment
+        - Downloads the published artifact
+        - Publishing the changes as a GitHub release that return the asset URL
+        - Authenticates into Azure using OIDC (OpenID Connect) authorization tokens.
+        - Configuring the kubectl utility to have the current context set to 'raykube'
+        - Uses the deployment yaml configuration file to deploy the serve application into raykube AKS cluster.
+
+The process of building serve configuration file will be skipped if there is an build configuration that is already present within the manifests/ directory
+
+## Alternative approaches
+
+A serve application can also be deployed into a existing RayCluster (CRD) that is running in a KubeRay installed kubernetes cluster by submitting the build configuration yaml file using the `serve run` or `serve deploy` CLI command locally. But ensure the port of the RayCluster 8265, 8000 was been exposed via the kubernetes ingress to accept http requests (both incoming and outgoing). This make sure to submit a deployment configuration (via port 8265) and access the serve app (via 8000).
