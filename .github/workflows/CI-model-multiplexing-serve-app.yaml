@@ -77,9 +77,11 @@ jobs:
         with:
           tag_name: ${{ env.RELEASE_TAG }}
           release_name: "${{ env.RELEASE_TAG }}"
-          body_path: "./README.md"
+          body_path: "./release_notes.md"
 
       - name: Get ZIP file asset URL
         id: get_asset_url
         run: |
           echo ${{env.ASSET_URL}}
+  
+  # Deploy to kubernetes (Ray Kube)
